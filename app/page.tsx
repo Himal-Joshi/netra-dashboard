@@ -87,8 +87,18 @@ export default async function Home() {
               </p>
             </div>
 
-            <div className="pt-8">
+            <div className="pt-8 flex flex-col sm:flex-row items-center gap-4">
               <MainLoginButton />
+              <a 
+                href="https://discord.com/oauth2/authorize?client_id=1522552291327082628" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto"
+              >
+                <div className="flex h-12 items-center justify-center space-x-3 rounded-full border border-border bg-transparent px-8 transition-all hover:bg-secondary hover:text-foreground text-muted-foreground w-full sm:w-auto font-medium text-sm tracking-wide">
+                  <span>Invite Netra</span>
+                </div>
+              </a>
             </div>
           </div>
         </main>
