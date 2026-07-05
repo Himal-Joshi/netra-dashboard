@@ -3,12 +3,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Image from "next/image";
-import { LogIn } from "lucide-react";
-
+import { TopLoginButton, MainLoginButton } from "@/components/login-button";
 async function getStats() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   try {
-    const res = await fetch(`${apiUrl}/api/stats`, {
+    const res = await fetch(`${apiUrl}/api/v1/stats`, {
       next: { revalidate: 60 },
     });
     if (!res.ok) return null;
@@ -54,11 +53,7 @@ export default async function Home() {
               <a className="text-[#a1a1aa] hover:text-white transition-colors" href="#">Commands</a>
               <a className="text-[#a1a1aa] hover:text-white transition-colors" href="#">Support</a>
             </div>
-            <Link href="/api/auth/signin">
-              <button className="bg-transparent border border-[#2d2d2d] text-white font-mono text-xs px-4 py-2 rounded hover:bg-white/5 transition-all active:scale-95 duration-200 uppercase tracking-widest">
-                Login
-              </button>
-            </Link>
+            <TopLoginButton />
           </div>
         </nav>
 
@@ -88,12 +83,7 @@ export default async function Home() {
             </div>
 
             <div className="pt-8">
-              <Link href="/api/auth/signin">
-                <button className="bg-[#5865F2] text-white font-mono text-xs md:text-sm px-10 py-4 rounded hover:brightness-110 transition-all active:scale-95 duration-200 inline-flex items-center gap-3 shadow-[0_4px_20px_rgba(88,101,242,0.3)] tracking-widest uppercase">
-                  <LogIn className="w-4 h-4" />
-                  LOGIN WITH DISCORD
-                </button>
-              </Link>
+              <MainLoginButton />
             </div>
           </div>
         </main>
@@ -109,7 +99,7 @@ export default async function Home() {
                 <Image src="/logo_netra.png" alt="Icon" width={24} height={24} className="h-6 w-6 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                 <span className="font-mono text-[10px] tracking-widest text-[#5865F2] opacity-70">STABLE</span>
               </div>
-              <span className="text-4xl md:text-5xl font-semibold text-white tracking-tight">{stats?.servers || "---"}</span>
+              <span className="text-4xl md:text-5xl font-semibold text-white tracking-tight">{stats?.server_count || "---"}</span>
               <span className="font-mono text-xs text-[#a1a1aa] mt-2 tracking-widest uppercase">Servers</span>
             </div>
 
@@ -120,7 +110,7 @@ export default async function Home() {
                 <Image src="/logo_netra.png" alt="Icon" width={24} height={24} className="h-6 w-6 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
                 <span className="font-mono text-[10px] tracking-widest text-[#5865F2] opacity-70">ACTIVE</span>
               </div>
-              <span className="text-4xl md:text-5xl font-semibold text-white tracking-tight">{stats?.users || "---"}</span>
+              <span className="text-4xl md:text-5xl font-semibold text-white tracking-tight">{stats?.member_count || "---"}</span>
               <span className="font-mono text-xs text-[#a1a1aa] mt-2 tracking-widest uppercase">Users</span>
             </div>
 
