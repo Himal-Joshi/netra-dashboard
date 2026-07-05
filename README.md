@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Netra Dashboard
 
-## Getting Started
+Netra Dashboard is the modern web interface for the Netra Discord Bot. It displays live statistics directly from the bot and allows users to manage their servers and configurations through an elegant, atmospheric UI.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **Live Statistics**: Displays real-time server count, active users, and bot ping.
+- **Discord Authentication**: Seamless login via Discord OAuth2.
+- **Modern UI**: Built with Next.js 14, Tailwind CSS, and a sleek dark mode design.
+- **Responsive**: Fully responsive interface that looks great on mobile, tablet, and desktop.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Prerequisites
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Node.js 18+
+- A Discord Developer Application (for OAuth2)
+- The [Netra Discord Bot](https://github.com/Himal-Joshi/netra-discord-bot) running with its FastAPI backend accessible.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Local Setup
 
-## Learn More
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Himal-Joshi/netra-dashboard.git
+   cd netra-dashboard
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. **Configure Environment Variables:**
+   Create a `.env` file in the root of the project with the following:
+   ```env
+   # Discord OAuth Credentials
+   DISCORD_CLIENT_ID=your_client_id
+   DISCORD_CLIENT_SECRET=your_client_secret
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+   # NextAuth Configuration
+   NEXTAUTH_SECRET=your_random_secret_string
+   NEXTAUTH_URL=http://localhost:3000
 
-## Deploy on Vercel
+   # Backend API Configuration
+   # Ensure your bot's FastAPI backend is running and the port is exposed
+   NEXT_PUBLIC_API_URL=http://your_bot_server_ip:8000
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Run the development server:**
+   ```bash
+   npm run dev
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Deployment to Vercel
+
+The easiest way to deploy this dashboard is using [Vercel](https://vercel.com/):
+
+1. Push your code to GitHub.
+2. Import the repository into Vercel.
+3. Add all your `.env` variables to the Vercel Environment Variables section.
+4. **Important**: Change `NEXTAUTH_URL` to your new Vercel domain (e.g., `https://netra-dashboard.vercel.app`).
+5. **Discord Setup**: In the Discord Developer Portal, add your Vercel domain to your OAuth2 Redirect URIs:
+   `https://netra-dashboard.vercel.app/api/auth/callback/discord`
+6. Click Deploy!
