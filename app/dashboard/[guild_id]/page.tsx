@@ -11,7 +11,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function getTicketSettings(guildId: string, accessToken: string) {
   try {
-    const res = await fetch(`${API_URL}/api/guilds/${guildId}/ticket-settings`, {
+    const res = await fetch(`${API_URL}/api/v1/guilds/${guildId}/ticket-settings`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },

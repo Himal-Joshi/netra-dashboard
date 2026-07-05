@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import { TopLoginButton, MainLoginButton } from "@/components/login-button";
 import { Footer } from "@/components/footer";
+import { ThemeToggle } from "@/components/theme-toggle";
 async function getStats() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
   try {
@@ -27,7 +28,7 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen relative overflow-hidden bg-[#0a0a0a] text-[#e2e1eb] font-sans selection:bg-[#5865f2] selection:text-white">
+    <div className="flex flex-col min-h-screen relative overflow-hidden bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground">
       
       {/* Atmospheric Background Element */}
       <div className="fixed inset-0 z-0 flex items-center justify-center overflow-hidden pointer-events-none">
@@ -44,17 +45,20 @@ export default async function Home() {
       <div className="relative z-10 flex flex-col flex-grow">
         
         {/* Minimalist Top Nav */}
-        <nav className="w-full top-0 backdrop-blur-xl bg-[#0a0a0a]/30 sticky z-50">
+        <nav className="w-full top-0 backdrop-blur-xl bg-background/50 sticky z-50 border-b border-border">
           <div className="flex justify-between items-center w-full px-6 py-4 max-w-7xl mx-auto">
-            <div className="font-bold text-xl tracking-tighter">
+            <Link href="/" className="font-bold text-xl tracking-tighter hover:text-primary transition-colors">
               Netra
-            </div>
+            </Link>
             <div className="hidden md:flex items-center gap-12 font-mono text-xs tracking-widest uppercase">
-              <a className="text-[#bec2ff] border-b border-[#bec2ff] pb-1" href="#">Home</a>
-              <a className="text-[#a1a1aa] hover:text-white transition-colors" href="#">Commands</a>
-              <a className="text-[#a1a1aa] hover:text-white transition-colors" href="#">Support</a>
+              <Link className="text-primary border-b border-primary pb-1" href="/">Home</Link>
+              <Link className="text-muted-foreground hover:text-foreground transition-colors" href="/commands">Commands</Link>
+              <Link className="text-muted-foreground hover:text-foreground transition-colors" href="/support">Support</Link>
             </div>
-            <TopLoginButton />
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <TopLoginButton />
+            </div>
           </div>
         </nav>
 
@@ -75,10 +79,10 @@ export default async function Home() {
             </div>
 
             <div className="space-y-4">
-              <h1 className="text-5xl md:text-[80px] font-bold tracking-[0.15em] text-white hidden">
+              <h1 className="text-5xl md:text-[80px] font-bold tracking-[0.15em] text-foreground hidden">
                 NETRA
               </h1>
-              <p className="font-mono text-xs md:text-sm text-[#a1a1aa] tracking-[0.3em] uppercase">
+              <p className="font-mono text-xs md:text-sm text-muted-foreground tracking-[0.3em] uppercase">
                 Intelligence in Silence
               </p>
             </div>
@@ -94,39 +98,39 @@ export default async function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Stats Card 1 */}
-            <div className="group flex flex-col items-start p-6 bg-white/[0.02] backdrop-blur-md border border-white/[0.08] rounded-xl transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
+            <div className="group flex flex-col items-start p-6 bg-card backdrop-blur-md border border-border rounded-xl transition-transform hover:-translate-y-1 hover:border-primary/50 duration-300 relative overflow-hidden shadow-sm">
               <div className="absolute inset-0 bg-[radial-gradient(400px_circle_at_var(--mouse-x)_var(--mouse-y),rgba(88,101,242,0.05),transparent_40%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
               <div className="flex justify-between items-center w-full mb-8">
-                <Image src="/logo_netra.png" alt="Icon" width={24} height={24} className="h-6 w-6 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
-                <span className="font-mono text-[10px] tracking-widest text-[#5865F2] opacity-70">STABLE</span>
+                <Image src="/logo_netra.png" alt="Icon" width={24} height={24} className="h-6 w-6 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all dark:invert" />
+                <span className="font-mono text-[10px] tracking-widest text-primary opacity-70">STABLE</span>
               </div>
-              <span className="text-4xl md:text-5xl font-semibold text-white tracking-tight">{stats?.server_count || "---"}</span>
-              <span className="font-mono text-xs text-[#a1a1aa] mt-2 tracking-widest uppercase">Servers</span>
+              <span className="text-4xl md:text-5xl font-semibold text-foreground tracking-tight">{stats?.server_count || "---"}</span>
+              <span className="font-mono text-xs text-muted-foreground mt-2 tracking-widest uppercase">Servers</span>
             </div>
 
             {/* Stats Card 2 */}
-            <div className="group flex flex-col items-start p-6 bg-white/[0.02] backdrop-blur-md border border-white/[0.08] rounded-xl transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
+            <div className="group flex flex-col items-start p-6 bg-card backdrop-blur-md border border-border rounded-xl transition-transform hover:-translate-y-1 hover:border-primary/50 duration-300 relative overflow-hidden shadow-sm">
               <div className="absolute inset-0 bg-[radial-gradient(400px_circle_at_var(--mouse-x)_var(--mouse-y),rgba(88,101,242,0.05),transparent_40%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
               <div className="flex justify-between items-center w-full mb-8">
-                <Image src="/logo_netra.png" alt="Icon" width={24} height={24} className="h-6 w-6 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
-                <span className="font-mono text-[10px] tracking-widest text-[#5865F2] opacity-70">ACTIVE</span>
+                <Image src="/logo_netra.png" alt="Icon" width={24} height={24} className="h-6 w-6 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all dark:invert" />
+                <span className="font-mono text-[10px] tracking-widest text-primary opacity-70">ACTIVE</span>
               </div>
-              <span className="text-4xl md:text-5xl font-semibold text-white tracking-tight">{stats?.member_count || "---"}</span>
-              <span className="font-mono text-xs text-[#a1a1aa] mt-2 tracking-widest uppercase">Users</span>
+              <span className="text-4xl md:text-5xl font-semibold text-foreground tracking-tight">{stats?.member_count || "---"}</span>
+              <span className="font-mono text-xs text-muted-foreground mt-2 tracking-widest uppercase">Users</span>
             </div>
 
             {/* Stats Card 3 */}
-            <div className="group flex flex-col items-start p-6 bg-white/[0.02] backdrop-blur-md border border-white/[0.08] rounded-xl transition-transform hover:-translate-y-1 duration-300 relative overflow-hidden">
+            <div className="group flex flex-col items-start p-6 bg-card backdrop-blur-md border border-border rounded-xl transition-transform hover:-translate-y-1 hover:border-primary/50 duration-300 relative overflow-hidden shadow-sm">
               <div className="absolute inset-0 bg-[radial-gradient(400px_circle_at_var(--mouse-x)_var(--mouse-y),rgba(88,101,242,0.05),transparent_40%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
               <div className="flex justify-between items-center w-full mb-8">
-                <Image src="/logo_netra.png" alt="Icon" width={24} height={24} className="h-6 w-6 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all" />
+                <Image src="/logo_netra.png" alt="Icon" width={24} height={24} className="h-6 w-6 opacity-60 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all dark:invert" />
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                  <span className="font-mono text-[10px] tracking-widest text-[#5865F2] opacity-70">99.9%</span>
+                  <span className="font-mono text-[10px] tracking-widest text-primary opacity-70">99.9%</span>
                 </div>
               </div>
-              <span className="text-4xl md:text-5xl font-semibold text-white tracking-tight">{stats?.ping ? `${stats.ping}ms` : "---"}</span>
-              <span className="font-mono text-xs text-[#a1a1aa] mt-2 tracking-widest uppercase">Ping</span>
+              <span className="text-4xl md:text-5xl font-semibold text-foreground tracking-tight">{stats?.ping ? `${stats.ping}ms` : "---"}</span>
+              <span className="font-mono text-xs text-muted-foreground mt-2 tracking-widest uppercase">Ping</span>
             </div>
 
           </div>

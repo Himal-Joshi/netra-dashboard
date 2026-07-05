@@ -2,9 +2,9 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { Bot, LogOut, LayoutDashboard } from "lucide-react";
+import Image from "next/image";
+import { LogOut, LayoutDashboard, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Footer } from "@/components/footer";
 
 export default async function DashboardLayout({
   children,
@@ -18,43 +18,50 @@ export default async function DashboardLayout({
   }
 
   return (
-    <div className="flex flex-col min-h-screen relative bg-[#0a0a0a] text-[#e2e1eb] font-sans selection:bg-[#5865f2] selection:text-white overflow-x-hidden">
+    <div className="flex h-screen overflow-hidden bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground">
       {/* Atmospheric Background Glow */}
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-[#5865F2] opacity-[0.08] blur-[150px] rounded-full pointer-events-none -z-10" />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-primary opacity-[0.05] blur-[150px] rounded-full pointer-events-none z-0" />
       
-      <header className="sticky top-0 z-50 w-full border-b border-white/[0.05] bg-[#0a0a0a]/80 backdrop-blur-xl">
-        <div className="container mx-auto flex h-16 items-center px-4 md:px-8">
-          <div className="mr-4 hidden md:flex">
-            <Link href="/dashboard" className="mr-6 flex items-center space-x-2 group">
-              <Bot className="h-6 w-6 text-[#5865F2] group-hover:scale-110 transition-transform" />
-              <span className="hidden font-bold sm:inline-block text-white">Netra</span>
-            </Link>
-          </div>
-          <div className="flex flex-1 items-center justify-between space-x-2 md:justify-end">
-            <div className="w-full flex-1 md:w-auto md:flex-none">
-              {/* Add search or other top nav items here */}
-            </div>
-            <nav className="flex items-center gap-2">
-              <Link href="/dashboard">
-                <Button variant="ghost" size="sm" className="hidden md:flex text-[#a1a1aa] hover:text-white hover:bg-white/[0.05]">
-                  <LayoutDashboard className="mr-2 h-4 w-4" />
-                  Dashboard
-                </Button>
-              </Link>
-              <Link href="/api/auth/signout">
-                <Button variant="outline" size="sm" className="bg-transparent border-red-500/20 text-red-400 hover:bg-red-500/10 hover:text-red-300">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </Button>
-              </Link>
-            </nav>
-          </div>
+      {/* Left Sidebar */}
+      <aside className="w-64 flex-shrink-0 border-r border-border bg-card/50 backdrop-blur-xl flex flex-col z-20 shadow-sm relative">
+        <div className="h-20 flex items-center px-6 border-b border-border/50">
+          <Link href="/dashboard" className="flex items-center space-x-3 group">
+            <Image 
+              src="/logo_netra.png" 
+              alt="Netra Logo" 
+              width={32} 
+              height={32} 
+              className="w-auto h-auto group-hover:scale-110 transition-transform dark:invert" 
+            />
+            <span className="font-bold text-xl tracking-tight">Netra</span>
+          </Link>
         </div>
-      </header>
-      <main className="flex-1 container mx-auto p-4 md:p-8 md:pt-12 mb-12">
-        {children}
+        
+        <nav className="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
+          <Link href="/dashboard" className="block">
+            <Button variant="ghost" className="w-full justify-start text-muted-foreground hover:text-foreground hover:bg-secondary/50 h-12 rounded-xl transition-all font-medium">
+              <LayoutDashboard className="mr-3 h-5 w-5" />
+              Overview
+            </Button>
+          </Link>
+          <div className="pt-4 pb-2">
+            <p className="px-4 text-xs font-semibold text-muted-foreground uppercase tracking-wider">Account</p>
+          </div>
+          <Link href="/api/auth/signout" className="block">
+            <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-red-400 hover:bg-red-500/10 h-12 rounded-xl transition-all font-medium">
+              <LogOut className="mr-3 h-5 w-5" />
+              Sign Out
+            </Button>
+          </Link>
+        </nav>
+      </aside>
+
+      {/* Main Content Area */}
+      <main className="flex-1 flex flex-col overflow-y-auto z-10 relative scroll-smooth">
+        <div className="p-6 md:p-10 max-w-7xl mx-auto w-full flex-1">
+          {children}
+        </div>
       </main>
-      <Footer />
     </div>
   );
 }
