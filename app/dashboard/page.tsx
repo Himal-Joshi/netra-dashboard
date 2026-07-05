@@ -64,9 +64,9 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-4xl font-bold tracking-tight mb-2">Your Servers</h1>
-        <p className="text-muted-foreground text-lg">Select a server to manage Netra settings.</p>
+      <div className="flex flex-col mb-12">
+        <h1 className="text-4xl md:text-5xl font-bold tracking-tighter mb-4 text-white">Your Servers</h1>
+        <p className="text-[#a1a1aa] text-lg max-w-xl">Select a server to configure Netra and manage its modules, automoderation, and settings.</p>
       </div>
 
       {manageableGuilds.length === 0 ? (
@@ -77,29 +77,37 @@ export default async function DashboardPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {manageableGuilds.map((guild) => (
-            <Card key={guild.id} className="group hover:border-primary/50 transition-colors bg-card/40 backdrop-blur-sm shadow-md hover:shadow-[0_0_20px_rgba(88,101,242,0.15)] flex flex-col h-full">
-              <CardHeader className="flex flex-row items-center gap-4 pb-4">
-                <Avatar className="h-16 w-16 border-2 border-transparent group-hover:border-primary/50 transition-colors">
+            <Card key={guild.id} className="group relative overflow-hidden rounded-2xl bg-white/[0.02] border-white/[0.05] hover:bg-white/[0.04] hover:border-[#5865F2]/50 transition-all duration-300 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] hover:shadow-[0_0_30px_-5px_rgba(88,101,242,0.3)] flex flex-col h-full">
+              {/* Subtle gradient overlay on hover */}
+              <div className="absolute inset-0 bg-gradient-to-br from-[#5865F2]/0 via-transparent to-[#5865F2]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              
+              <CardHeader className="flex flex-row items-center gap-5 pb-4 pt-6 relative z-10">
+                <Avatar className="h-16 w-16 rounded-2xl border border-white/[0.1] bg-black/50 shadow-inner group-hover:border-[#5865F2]/50 transition-colors">
                   <AvatarImage 
                     src={guild.icon ? `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png` : ""} 
-                    alt={guild.name} 
+                    alt={guild.name}
+                    className="object-cover"
                   />
-                  <AvatarFallback className="bg-primary/20 text-primary font-bold text-xl">
+                  <AvatarFallback className="bg-transparent text-white/70 font-semibold text-xl">
                     {guild.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <CardTitle className="text-xl line-clamp-1 group-hover:text-primary transition-colors">{guild.name}</CardTitle>
-                  <CardDescription>Server ID: {guild.id}</CardDescription>
+                  <CardTitle className="text-xl font-semibold tracking-tight text-white/90 group-hover:text-white transition-colors line-clamp-1">
+                    {guild.name}
+                  </CardTitle>
+                  <CardDescription className="text-xs font-mono text-[#a1a1aa] mt-1 opacity-70">
+                    ID: {guild.id}
+                  </CardDescription>
                 </div>
               </CardHeader>
-              <CardContent className="flex-1">
-                {/* Could display bot presence here if we checked with backend */}
+              <CardContent className="flex-1 relative z-10">
+                {/* Future content spacing */}
               </CardContent>
-              <CardFooter>
+              <CardFooter className="pt-4 pb-6 px-6 relative z-10">
                 <Link href={`/dashboard/${guild.id}`} className="w-full">
-                  <Button className="w-full group-hover:bg-primary transition-colors group-hover:text-primary-foreground">
-                    <Settings className="w-4 h-4 mr-2" />
+                  <Button className="w-full bg-white/[0.05] hover:bg-[#5865F2] text-white border border-white/[0.1] hover:border-[#5865F2] transition-all duration-300 rounded-xl font-medium tracking-wide">
+                    <Settings className="w-4 h-4 mr-2 opacity-70 group-hover:opacity-100 group-hover:rotate-90 transition-all duration-500" />
                     Manage Settings
                   </Button>
                 </Link>
