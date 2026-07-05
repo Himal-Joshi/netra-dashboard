@@ -18,7 +18,7 @@ export function MainLoginButton() {
   return (
     <button 
       onClick={() => signIn("discord")}
-      className="bg-[#5865F2] text-white font-mono text-xs md:text-sm px-10 py-4 rounded hover:brightness-110 transition-all active:scale-95 duration-200 inline-flex items-center gap-3 shadow-[0_4px_20px_rgba(88,101,242,0.3)] tracking-widest uppercase"
+      className="bg-[#5865F2] text-white font-mono text-xs md:text-sm px-8 py-3 h-10 rounded-full hover:bg-gradient-to-r hover:from-primary hover:to-blue-400 hover:shadow-[0_0_15px_rgba(88,101,242,0.6)] transition-all active:scale-95 duration-300 inline-flex items-center gap-3 tracking-widest uppercase border border-transparent"
     >
       <LogIn className="w-4 h-4" />
       LOGIN WITH DISCORD
