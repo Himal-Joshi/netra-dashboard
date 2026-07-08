@@ -20,7 +20,7 @@ export function WelcomeSettingsForm({
 }) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    channel_id: initialSettings?.channel_id?.toString() || "",
+    channel_id: initialSettings?.channel_id?.toString() || "none",
     message: initialSettings?.message || "Welcome to the server, {user}!",
     image_url: initialSettings?.image_url || "",
   });
@@ -31,7 +31,7 @@ export function WelcomeSettingsForm({
     // We update the formData with our state values because the Select component doesn't automatically put its value in the native FormData if not set up correctly with hidden inputs.
     // An easier way is to just append them to a new FormData
     const submissionData = new FormData();
-    submissionData.append("channel_id", formData.channel_id);
+    submissionData.append("channel_id", formData.channel_id === "none" ? "" : formData.channel_id);
     submissionData.append("message", formData.message);
     submissionData.append("image_url", formData.image_url);
 
@@ -60,7 +60,7 @@ export function WelcomeSettingsForm({
                 <SelectValue placeholder="Select a channel" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">None (Disabled)</SelectItem>
+                <SelectItem value="none">None (Disabled)</SelectItem>
                 {channels.map(c => (
                   <SelectItem key={c.id} value={c.id}>#{c.name}</SelectItem>
                 ))}

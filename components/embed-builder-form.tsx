@@ -66,7 +66,7 @@ export function EmbedBuilderForm({
           <form action={onSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Target Channel *</label>
-              <Select value={formData.channel_id} onValueChange={(v) => setFormData({...formData, channel_id: v || ""})}>
+              <Select value={formData.channel_id || undefined} onValueChange={(v) => setFormData({...formData, channel_id: v || ""})}>
                 <SelectTrigger className="bg-background/50">
                   <SelectValue placeholder="Select a channel" />
                 </SelectTrigger>
