@@ -9,9 +9,15 @@ import { EmbedBuilderForm } from "./embed-builder-form";
 export function GuildSettingsClient({
   guildId,
   ticketSettings,
+  automodSettings,
+  welcomeSettings,
+  channels,
 }: {
   guildId: string;
   ticketSettings: any;
+  automodSettings: any;
+  welcomeSettings: any;
+  channels: {id: string, name: string}[];
 }) {
   return (
     <div className="mt-6">
@@ -30,13 +36,13 @@ export function GuildSettingsClient({
             <TicketSettingsForm guildId={guildId} initialSettings={ticketSettings} />
           </TabsContent>
           <TabsContent value="welcome" className="mt-0 outline-none">
-            <WelcomeSettingsForm guildId={guildId} />
+            <WelcomeSettingsForm guildId={guildId} initialSettings={welcomeSettings} channels={channels} />
           </TabsContent>
           <TabsContent value="automod" className="mt-0 outline-none">
-            <AutomodSettingsForm guildId={guildId} />
+            <AutomodSettingsForm guildId={guildId} initialSettings={automodSettings} />
           </TabsContent>
           <TabsContent value="embed" className="mt-0 outline-none">
-            <EmbedBuilderForm guildId={guildId} />
+            <EmbedBuilderForm guildId={guildId} channels={channels} />
           </TabsContent>
         </div>
       </Tabs>

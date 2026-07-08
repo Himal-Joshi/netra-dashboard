@@ -1,19 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { useSession } from "next-auth/react";
 import { Loader2, Send } from "lucide-react";
+import { sendEmbedAction } from "@/app/dashboard/[guild_id]/actions";
 
-export function EmbedBuilderForm({ guildId }: { guildId: string }) {
-  const { data: session } = useSession();
-  const [loading, setLoading] = useState(true);
-  const [sending, setSending] = useState(false);
-  const [channels, setChannels] = useState<{id: string, name: string}[]>([]);
+export function EmbedBuilderForm({ 
+  guildId, 
+  channels 
+}: { 
+  guildId: string;
+  channels: {id: string, name: string}[];
+}) {
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     channel_id: "",
     title: "",
@@ -22,28 +25,7 @@ export function EmbedBuilderForm({ guildId }: { guildId: string }) {
     image_url: "",
   });
 
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
-  useEffect(() => {
-    async function fetchData() {
-      if (!session) return;
-      try {
-        const token = (session as any).accessToken;
-        const cRes = await fetch(`${apiUrl}/api/v1/guilds/${guildId}/channels`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        if (cRes.ok) setChannels(await cRes.json());
-      } catch (e) {
-        toast.error("Failed to load channels");
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchData();
-  }, [guildId, session, apiUrl]);
-
-  const handleSend = async () => {
-    if (!session) return;
+  async function onSubmit(fd: FormData) {
     if (!formData.channel_id) {
       toast.error("Please select a channel");
       return;
@@ -53,39 +35,25 @@ export function EmbedBuilderForm({ guildId }: { guildId: string }) {
       return;
     }
 
-    setSending(true);
-    try {
-      const token = (session as any).accessToken;
-      const res = await fetch(`${apiUrl}/api/v1/guilds/${guildId}/send-embed`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          channel_id: parseInt(formData.channel_id),
-          title: formData.title || null,
-          description: formData.description || null,
-          color: formData.color || null,
-          image_url: formData.image_url || null,
-        }),
-      });
+    setLoading(true);
+    
+    const submissionData = new FormData();
+    submissionData.append("channel_id", formData.channel_id);
+    submissionData.append("title", formData.title);
+    submissionData.append("description", formData.description);
+    submissionData.append("color", formData.color);
+    submissionData.append("image_url", formData.image_url);
 
-      if (res.ok) {
-        toast.success("Embed sent successfully!");
-        setFormData({ ...formData, title: "", description: "", image_url: "" }); // Reset content but keep channel/color
-      } else {
-        toast.error("Failed to send embed");
-      }
-    } catch (e) {
-      toast.error("An error occurred");
-    } finally {
-      setSending(false);
+    const result = await sendEmbedAction(guildId, submissionData);
+    
+    if (result.error) {
+      toast.error(result.error);
+    } else {
+      toast.success("Embed sent successfully!");
+      setFormData({ ...formData, title: "", description: "", image_url: "" }); // Reset content but keep channel/color
     }
-  };
-
-  if (loading) {
-    return <div className="flex items-center justify-center p-8"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
+    
+    setLoading(false);
   }
 
   return (
@@ -95,7 +63,7 @@ export function EmbedBuilderForm({ guildId }: { guildId: string }) {
         <p className="text-sm text-muted-foreground mb-6">Create and instantly send rich embedded messages to your server.</p>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div className="space-y-4">
+          <form action={onSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Target Channel *</label>
               <Select value={formData.channel_id} onValueChange={(v) => setFormData({...formData, channel_id: v || ""})}>
@@ -161,11 +129,11 @@ export function EmbedBuilderForm({ guildId }: { guildId: string }) {
               />
             </div>
 
-            <Button onClick={handleSend} disabled={sending} className="w-full">
-              {sending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
+            <Button type="submit" disabled={loading} className="w-full">
+              {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
               Send to Discord
             </Button>
-          </div>
+          </form>
 
           {/* Embed Preview */}
           <div className="relative">

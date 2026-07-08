@@ -9,26 +9,19 @@ import { Toaster } from "@/components/ui/sonner";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
-async function getTicketSettings(guildId: string, accessToken: string) {
+async function getSettings(guildId: string, accessToken: string, endpoint: string) {
   try {
-    const res = await fetch(`${API_URL}/api/v1/guilds/${guildId}/ticket-settings`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-      next: { tags: [`ticket-settings-${guildId}`], revalidate: 60 },
+    const res = await fetch(`${API_URL}/api/v1/guilds/${guildId}/${endpoint}`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+      next: { tags: [`${endpoint}-${guildId}`], revalidate: 10 },
     });
-    
     if (!res.ok) {
-      if (res.status === 401 || res.status === 403) {
-        return { error: "You don't have permission to manage this server." };
-      }
-      return { error: `Failed to fetch settings: ${res.statusText}` };
+      if (res.status === 401 || res.status === 403) return { error: "Unauthorized" };
+      return null;
     }
-    
-    return { data: await res.json() };
+    return await res.json();
   } catch (e) {
-    console.error("Failed to fetch ticket settings", e);
-    return { error: "Could not connect to the backend server." };
+    return null;
   }
 }
 
@@ -46,7 +39,14 @@ export default async function ServerSettingsPage({
   const accessToken = (session as any).accessToken;
   const { guild_id } = await params;
   
-  const result = await getTicketSettings(guild_id, accessToken);
+  const [ticketSettings, automodSettings, welcomeSettings, channels] = await Promise.all([
+    getSettings(guild_id, accessToken, "ticket-settings"),
+    getSettings(guild_id, accessToken, "automod-settings"),
+    getSettings(guild_id, accessToken, "welcome-settings"),
+    getSettings(guild_id, accessToken, "channels"),
+  ]);
+
+  const error = ticketSettings?.error || automodSettings?.error;
 
   return (
     <div className="space-y-6">
@@ -62,13 +62,19 @@ export default async function ServerSettingsPage({
         </div>
       </div>
 
-      {result.error ? (
+      {error ? (
         <div className="p-6 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive">
           <h2 className="font-semibold text-lg mb-2">Error</h2>
-          <p>{result.error}</p>
+          <p>{error}</p>
         </div>
       ) : (
-        <GuildSettingsClient guildId={guild_id} ticketSettings={result.data} />
+        <GuildSettingsClient 
+          guildId={guild_id} 
+          ticketSettings={ticketSettings || {}} 
+          automodSettings={automodSettings || {}} 
+          welcomeSettings={welcomeSettings || {}} 
+          channels={channels || []} 
+        />
       )}
       
       <Toaster theme="dark" />
