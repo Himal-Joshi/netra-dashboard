@@ -18,7 +18,7 @@ export function EmbedBuilderForm({
 }) {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    channel_id: "",
+    channel_id: "none",
     title: "",
     description: "",
     color: "#5865F2",
@@ -26,7 +26,7 @@ export function EmbedBuilderForm({
   });
 
   async function onSubmit(fd: FormData) {
-    if (!formData.channel_id) {
+    if (!formData.channel_id || formData.channel_id === "none") {
       toast.error("Please select a channel");
       return;
     }
@@ -38,7 +38,7 @@ export function EmbedBuilderForm({
     setLoading(true);
     
     const submissionData = new FormData();
-    submissionData.append("channel_id", formData.channel_id);
+    submissionData.append("channel_id", formData.channel_id === "none" ? "" : formData.channel_id);
     submissionData.append("title", formData.title);
     submissionData.append("description", formData.description);
     submissionData.append("color", formData.color);
@@ -66,14 +66,15 @@ export function EmbedBuilderForm({
           <form action={onSubmit} className="space-y-4">
             <div className="space-y-2">
               <label className="text-sm font-medium">Target Channel *</label>
-              <Select value={formData.channel_id || undefined} onValueChange={(v) => setFormData({...formData, channel_id: v || ""})}>
+              <Select value={formData.channel_id} onValueChange={(v) => setFormData({...formData, channel_id: v || "none"})}>
                 <SelectTrigger className="bg-background/50">
                   <SelectValue placeholder="Select a channel" />
                 </SelectTrigger>
                 <SelectContent>
-                  {channels.map(c => (
+                  <SelectItem value="none">Select a channel</SelectItem>
+                  {Array.isArray(channels) ? channels.map(c => (
                     <SelectItem key={c.id} value={c.id}>#{c.name}</SelectItem>
-                  ))}
+                  )) : null}
                 </SelectContent>
               </Select>
             </div>
