@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { TicketSettingsForm } from "@/components/ticket-settings-form";
+import { GuildSettingsClient } from "@/components/guild-settings-client";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
@@ -68,7 +68,7 @@ export default async function ServerSettingsPage({
           <p>{result.error}</p>
         </div>
       ) : (
-        <TicketSettingsForm guildId={guild_id} initialSettings={result.data} />
+        <GuildSettingsClient guildId={guild_id} ticketSettings={result.data} />
       )}
       
       <Toaster theme="dark" />
