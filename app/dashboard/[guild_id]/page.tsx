@@ -37,6 +37,20 @@ export default async function ServerSettingsPage({
   }
 
   const accessToken = (session as any).accessToken;
+  const sessionError = (session as any).error;
+
+  if (!accessToken || sessionError === "RefreshAccessTokenError") {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-6">
+        <h2 className="text-3xl font-bold tracking-tight">Session Expired</h2>
+        <p className="text-muted-foreground">Your Discord session has expired. Please sign in again to continue.</p>
+        <Link href="/api/auth/signin">
+          <Button size="lg">Sign In Again</Button>
+        </Link>
+      </div>
+    );
+  }
+
   const { guild_id } = await params;
   
   const [ticketSettings, automodSettings, welcomeSettings, channels] = await Promise.all([

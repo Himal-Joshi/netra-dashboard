@@ -52,11 +52,13 @@ export default async function DashboardPage() {
   }
 
   const accessToken = (session as any).accessToken;
-  if (!accessToken) {
+  const sessionError = (session as any).error;
+
+  if (!accessToken || sessionError === "RefreshAccessTokenError") {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
-        <h2 className="text-2xl font-bold mb-4">Authentication Error</h2>
-        <p className="text-muted-foreground mb-4">We couldn't retrieve your Discord access token. Please sign in again.</p>
+        <h2 className="text-2xl font-bold mb-4">Session Expired</h2>
+        <p className="text-muted-foreground mb-4">Your Discord session has expired. Please sign in again to continue.</p>
         <Link href="/api/auth/signin">
           <Button>Sign In Again</Button>
         </Link>
