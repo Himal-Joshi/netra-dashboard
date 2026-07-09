@@ -25,8 +25,8 @@ export async function updateTicketSettings(guildId: string, formData: FormData) 
         Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify({
-        transcript_channel_id: transcriptChannelId,
-        moderator_role_id: moderatorRoleId,
+        transcript_channel_id: transcriptChannelId || null,
+        moderator_role_id: moderatorRoleId || null,
       }),
     });
 
@@ -49,11 +49,16 @@ export async function updateAutomodSettings(guildId: string, formData: FormData)
   const wordsStr = formData.get("blacklisted_words") as string;
   const wordsList = wordsStr.split(",").map(w => w.trim()).filter(w => w.length > 0);
 
+  const warningMsg = formData.get("warning_message") as string;
+
   try {
     const res = await fetch(`${API_URL}/api/v1/guilds/${guildId}/automod-settings`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
-      body: JSON.stringify({ blacklisted_words: wordsList }),
+      body: JSON.stringify({ 
+        blacklisted_words: wordsList,
+        warning_message: warningMsg || null
+      }),
     });
     if (!res.ok) return { error: `Failed to update settings: ${res.statusText}` };
     revalidatePath(`/dashboard/${guildId}`);
@@ -77,7 +82,7 @@ export async function updateWelcomeSettings(guildId: string, formData: FormData)
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
       body: JSON.stringify({
-        channel_id: channel_id ? parseInt(channel_id) : null,
+        channel_id: channel_id || null,
         message: message || null,
         image_url: image_url || null,
       }),
@@ -109,7 +114,7 @@ export async function sendEmbedAction(guildId: string, formData: FormData) {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
       body: JSON.stringify({
-        channel_id: parseInt(channel_id),
+        channel_id: channel_id,
         title: title || null,
         description: description || null,
         color: color || null,
