@@ -23,6 +23,7 @@ export function EmbedBuilderForm({
     description: "",
     color: "#5865F2",
     image_url: "",
+    thumbnail_url: "",
   });
 
   async function onSubmit(fd: FormData) {
@@ -43,6 +44,7 @@ export function EmbedBuilderForm({
     submissionData.append("description", formData.description);
     submissionData.append("color", formData.color);
     submissionData.append("image_url", formData.image_url);
+    submissionData.append("thumbnail_url", formData.thumbnail_url);
 
     const result = await sendEmbedAction(guildId, submissionData);
     
@@ -50,7 +52,7 @@ export function EmbedBuilderForm({
       toast.error(result.error);
     } else {
       toast.success("Embed sent successfully!");
-      setFormData({ ...formData, title: "", description: "", image_url: "" }); // Reset content but keep channel/color
+      setFormData({ ...formData, title: "", description: "", image_url: "", thumbnail_url: "" }); // Reset content but keep channel/color
     }
     
     setLoading(false);
@@ -119,15 +121,28 @@ export function EmbedBuilderForm({
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Image URL</label>
-              <Input 
-                type="url" 
-                className="bg-background/50" 
-                placeholder="https://example.com/image.png" 
-                value={formData.image_url}
-                onChange={(e) => setFormData({...formData, image_url: e.target.value})}
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Image URL</label>
+                <Input 
+                  type="url" 
+                  className="bg-background/50" 
+                  placeholder="https://example.com/image.png" 
+                  value={formData.image_url}
+                  onChange={(e) => setFormData({...formData, image_url: e.target.value})}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Thumbnail URL</label>
+                <Input 
+                  type="url" 
+                  className="bg-background/50" 
+                  placeholder="https://example.com/thumb.png" 
+                  value={formData.thumbnail_url}
+                  onChange={(e) => setFormData({...formData, thumbnail_url: e.target.value})}
+                />
+              </div>
             </div>
 
             <Button type="submit" disabled={loading} className="w-full">
@@ -154,10 +169,16 @@ export function EmbedBuilderForm({
                       <img src={formData.image_url} alt="Embed image" className="max-h-64 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
                     </div>
                   )}
-                  {!formData.title && !formData.description && !formData.image_url && (
+                  {!formData.title && !formData.description && !formData.image_url && !formData.thumbnail_url && (
                     <div className="text-sm text-gray-500 italic">Embed preview will appear here...</div>
                   )}
                 </div>
+                {formData.thumbnail_url && (
+                  <div className="flex-shrink-0">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={formData.thumbnail_url} alt="Thumbnail" className="w-16 h-16 md:w-20 md:h-20 rounded-md object-cover" onError={(e) => e.currentTarget.style.display = 'none'} />
+                  </div>
+                )}
               </div>
             </div>
           </div>

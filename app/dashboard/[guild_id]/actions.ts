@@ -105,6 +105,7 @@ export async function sendEmbedAction(guildId: string, formData: FormData) {
   const description = formData.get("description") as string;
   const color = formData.get("color") as string;
   const image_url = formData.get("image_url") as string;
+  const thumbnail_url = formData.get("thumbnail_url") as string;
 
   if (!channel_id) return { error: "Please select a channel" };
   if (!title && !description) return { error: "Embed must have a title or description" };
@@ -119,6 +120,7 @@ export async function sendEmbedAction(guildId: string, formData: FormData) {
         description: description || null,
         color: color || null,
         image_url: image_url || null,
+        thumbnail_url: thumbnail_url || null,
       }),
     });
     if (!res.ok) return { error: `Failed to send embed: ${res.statusText}` };
