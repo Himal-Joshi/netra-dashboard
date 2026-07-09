@@ -53,14 +53,14 @@ export default async function ServerSettingsPage({
 
   const { guild_id } = await params;
   
-  const [ticketSettings, automodSettings, welcomeSettings, channels] = await Promise.all([
-    getSettings(guild_id, accessToken, "ticket-settings"),
-    getSettings(guild_id, accessToken, "automod-settings"),
-    getSettings(guild_id, accessToken, "welcome-settings"),
-    getSettings(guild_id, accessToken, "channels"),
-  ]);
+  const allSettings = await getSettings(guild_id, accessToken, "all-settings");
+  
+  const ticketSettings = allSettings?.ticketSettings || null;
+  const automodSettings = allSettings?.automodSettings || null;
+  const welcomeSettings = allSettings?.welcomeSettings || null;
+  const channels = allSettings?.channels || [];
 
-  const error = ticketSettings?.error || automodSettings?.error;
+  const error = allSettings?.error;
 
   return (
     <div className="space-y-6">

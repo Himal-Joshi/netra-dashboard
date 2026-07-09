@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { LogOut, LayoutDashboard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { SignOutButton } from "@/components/signout-button";
 
 export default async function DashboardLayout({
   children,
@@ -43,12 +44,7 @@ export default async function DashboardLayout({
           <div className="pt-6 pb-2">
             <p className="px-4 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Account Settings</p>
           </div>
-          <Link href="/api/auth/signout" className="block">
-            <Button variant="ghost" className="w-full justify-start text-red-500 hover:text-white hover:bg-red-500/80 hover:shadow-[0_0_15px_rgba(239,68,68,0.5)] h-14 rounded-2xl transition-all font-semibold tracking-wide text-md">
-              <LogOut className="mr-4 h-5 w-5" />
-              Sign Out
-            </Button>
-          </Link>
+          <SignOutButton />
         </nav>
       </aside>
 
