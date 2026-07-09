@@ -56,7 +56,7 @@ export function AutomodSettingsForm({
 
           <div className="space-y-2">
             <label className="text-sm font-medium">Warning Message</label>
-            <p className="text-xs text-muted-foreground mb-1">Message sent to user when their message is deleted. Use {"{user}"} to ping them.</p>
+            <p className="text-xs text-muted-foreground mb-1">Message sent to user when their message is deleted. Use {"{user}"} to ping them and {"{word}"} to show the bad word.</p>
             <Textarea 
               className="bg-background/50 font-mono" 
               rows={3}
