@@ -101,6 +101,7 @@ export async function sendEmbedAction(guildId: string, formData: FormData) {
   const accessToken = (session as any).accessToken;
   
   const channel_id = formData.get("channel_id") as string;
+  const message = formData.get("message") as string;
   const title = formData.get("title") as string;
   const description = formData.get("description") as string;
   const color = formData.get("color") as string;
@@ -108,7 +109,7 @@ export async function sendEmbedAction(guildId: string, formData: FormData) {
   const thumbnail_url = formData.get("thumbnail_url") as string;
 
   if (!channel_id) return { error: "Please select a channel" };
-  if (!title && !description) return { error: "Embed must have a title or description" };
+  if (!title && !description && !message && !image_url) return { error: "You must provide either a message or embed content" };
 
   try {
     const res = await fetch(`${API_URL}/api/v1/guilds/${guildId}/send-embed`, {
@@ -116,6 +117,7 @@ export async function sendEmbedAction(guildId: string, formData: FormData) {
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${accessToken}` },
       body: JSON.stringify({
         channel_id: channel_id,
+        message: message || null,
         title: title || null,
         description: description || null,
         color: color || null,

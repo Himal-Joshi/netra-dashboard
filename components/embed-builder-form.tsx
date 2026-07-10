@@ -19,6 +19,7 @@ export function EmbedBuilderForm({
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     channel_id: "none",
+    message: "",
     title: "",
     description: "",
     color: "#5865F2",
@@ -31,8 +32,8 @@ export function EmbedBuilderForm({
       toast.error("Please select a channel");
       return;
     }
-    if (!formData.title && !formData.description) {
-      toast.error("Embed must have a title or description");
+    if (!formData.title && !formData.description && !formData.message && !formData.image_url) {
+      toast.error("You must provide either a message or embed content");
       return;
     }
 
@@ -40,6 +41,7 @@ export function EmbedBuilderForm({
     
     const submissionData = new FormData();
     submissionData.append("channel_id", formData.channel_id === "none" ? "" : formData.channel_id);
+    submissionData.append("message", formData.message);
     submissionData.append("title", formData.title);
     submissionData.append("description", formData.description);
     submissionData.append("color", formData.color);
@@ -52,7 +54,7 @@ export function EmbedBuilderForm({
       toast.error(result.error);
     } else {
       toast.success("Embed sent successfully!");
-      setFormData({ ...formData, title: "", description: "", image_url: "", thumbnail_url: "" }); // Reset content but keep channel/color
+      setFormData({ ...formData, message: "", title: "", description: "", image_url: "", thumbnail_url: "" }); // Reset content but keep channel/color
     }
     
     setLoading(false);
@@ -79,6 +81,17 @@ export function EmbedBuilderForm({
                   )) : null}
                 </SelectContent>
               </Select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Plain Text Message (Optional)</label>
+              <Textarea 
+                className="bg-background/50" 
+                rows={3}
+                placeholder="Type a regular message here to appear above the embed, or use it without an embed to send plain text..."
+                value={formData.message}
+                onChange={(e) => setFormData({...formData, message: e.target.value})}
+              />
             </div>
 
             <div className="space-y-2">
@@ -154,12 +167,19 @@ export function EmbedBuilderForm({
           {/* Embed Preview */}
           <div className="relative">
             <label className="text-sm font-medium text-muted-foreground block mb-2">Live Preview</label>
-            <div className="bg-[#313338] text-[#dbdee1] p-4 rounded-md shadow-lg border-l-4 font-sans" style={{ borderLeftColor: formData.color }}>
-              <div className="flex gap-4">
-                <div className="flex-1 min-w-0 space-y-2">
-                  {formData.title && (
-                    <div className="font-bold text-white text-base truncate">{formData.title}</div>
-                  )}
+            <div className="bg-[#313338] text-[#dbdee1] p-4 rounded-md shadow-lg font-sans">
+              
+              {formData.message && (
+                <div className="mb-2 whitespace-pre-wrap leading-relaxed">{formData.message}</div>
+              )}
+
+              {(formData.title || formData.description || formData.image_url || formData.thumbnail_url) && (
+                <div className="border-l-4 pl-4 mt-2" style={{ borderLeftColor: formData.color }}>
+                  <div className="flex gap-4">
+                    <div className="flex-1 min-w-0 space-y-2">
+                      {formData.title && (
+                        <div className="font-bold text-white text-base truncate">{formData.title}</div>
+                      )}
                   {formData.description && (
                     <div className="text-sm whitespace-pre-wrap leading-relaxed">{formData.description}</div>
                   )}
@@ -168,18 +188,21 @@ export function EmbedBuilderForm({
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={formData.image_url} alt="Embed image" className="max-h-64 object-contain" onError={(e) => e.currentTarget.style.display = 'none'} />
                     </div>
-                  )}
-                  {!formData.title && !formData.description && !formData.image_url && !formData.thumbnail_url && (
-                    <div className="text-sm text-gray-500 italic">Embed preview will appear here...</div>
+                    )}
+                  </div>
+                  {formData.thumbnail_url && (
+                    <div className="flex-shrink-0">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={formData.thumbnail_url} alt="Thumbnail" className="w-16 h-16 md:w-20 md:h-20 rounded-md object-cover" onError={(e) => e.currentTarget.style.display = 'none'} />
+                    </div>
                   )}
                 </div>
-                {formData.thumbnail_url && (
-                  <div className="flex-shrink-0">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={formData.thumbnail_url} alt="Thumbnail" className="w-16 h-16 md:w-20 md:h-20 rounded-md object-cover" onError={(e) => e.currentTarget.style.display = 'none'} />
-                  </div>
-                )}
               </div>
+              )}
+
+              {!formData.title && !formData.description && !formData.image_url && !formData.thumbnail_url && !formData.message && (
+                <div className="text-sm text-gray-500 italic mt-2">Embed preview will appear here...</div>
+              )}
             </div>
           </div>
         </div>
